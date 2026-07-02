@@ -1,14 +1,19 @@
 <html>
     <head>
         <title>My Web Page</title>
-        <link rel="stylesheet" href="http://localhost:5500/styles.css">
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="./styles.css">
     </head>
     <body>
         <div class="container">
             <h1>Welcome to My Web Page</h1>
-            <p>This is a simple HTML page.</p>
-            <p id="status">Waiting for JavaScript...</p>
+            <p>This page is hosted on GitHub Pages and can test Chrome Local Network Access.</p>
+            <p id="target">Target: not set</p>
+            <p id="status">Preparing LNA test...</p>
+            <button id="testBtn" type="button">Run LNA Request</button>
+            <p class="hint">Use URL params like ?host=192.168.1.23&port=5500&path=/attentiondata.json</p>
         </div>
-        <script src="http://localhost:5500/script.js"></script>
+        <script src="./script.js"></script>
     </body>
 </html>
