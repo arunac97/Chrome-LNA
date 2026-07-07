@@ -1,28 +1,172 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chrome LNA</title>
+    <title>LNA Iframe Parent Test</title>
     <style>
+        :root {
+            --bg: #f4f6f8;
+            --card: #ffffff;
+            --ink: #101828;
+            --muted: #475467;
+            --ok: #067647;
+            --warn: #b54708;
+            --line: #d0d5dd;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
         body {
             margin: 0;
-            padding: 0;
-            width: 100%;
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+            background: radial-gradient(circle at 20% 10%, #e6f7ff, var(--bg) 45%);
+            color: var(--ink);
         }
-        iframe {
-            width: 80%;
-            height: 80%;
-            border: 2px solid #ccc;
+
+        .wrap {
+            max-width: 1200px;
+            margin: 24px auto;
+            padding: 16px;
+        }
+
+        .intro {
+            background: var(--card);
+            border: 1px solid var(--line);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 14px;
+        }
+
+        h1 {
+            margin: 0 0 8px;
+            font-size: 1.4rem;
+        }
+
+        p {
+            margin: 8px 0;
+            color: var(--muted);
+        }
+
+        .actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+
+        button {
+            border: 0;
             border-radius: 8px;
+            background: #155eef;
+            color: #fff;
+            padding: 10px 14px;
+            cursor: pointer;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .panel {
+            background: var(--card);
+            border: 1px solid var(--line);
+            border-radius: 12px;
+            overflow: hidden;
+            min-height: 560px;
+        }
+
+        .panel h2 {
+            margin: 0;
+            padding: 10px 12px;
+            font-size: 1rem;
+            border-bottom: 1px solid var(--line);
+        }
+
+        .panel.allowed h2 {
+            color: var(--ok);
+        }
+
+        .panel.blocked h2 {
+            color: var(--warn);
+        }
+
+        iframe {
+            width: 100%;
+            height: 520px;
+            border: 0;
+        }
+
+        .note {
+            margin-top: 10px;
+            font-size: 0.92rem;
+            color: var(--muted);
+        }
+
+        @media (max-width: 900px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
 <body>
-    <iframe src="https://arunac97.github.io/Chrome-LNA/"></iframe>
+    <main class="wrap">
+        <section class="intro">
+            <h1>LNA Iframe A/B Test</h1>
+            <p>Left iframe includes allow="local-network-access". Right iframe does not.</p>
+            <p>Open DevTools Console and Network tabs for both frames to compare preflight and fetch results.</p>
+            <div class="actions">
+                <button id="reloadBtn" type="button">Reload Both Frames</button>
+            </div>
+            <p class="note">
+                Tip: if both pass, your parent policy is permissive. To force a difference, apply a restrictive Permissions-Policy in your app and keep only the left iframe delegated.
+            </p>
+        </section>
+
+        <section class="grid">
+            <article class="panel allowed">
+                <h2>Allowed Frame (with allow attribute)</h2>
+                <iframe
+                    id="allowedFrame"
+                    src="https://10.69.82.161:6443/index.html?host=10.69.82.161&port=6443&scheme=https"
+                    allow="local-network-access"
+                    referrerpolicy="strict-origin-when-cross-origin">
+                </iframe>
+            </article>
+
+            <article class="panel blocked">
+                <h2>Control Frame (without allow attribute)</h2>
+                <iframe
+                    id="blockedFrame"
+                    src="https://10.69.82.161:6443/index.html?host=10.69.82.161&port=6443&scheme=https"
+                    referrerpolicy="strict-origin-when-cross-origin">
+                </iframe>
+            </article>
+        </section>
+    </main>
+
+    <script>
+        (function () {
+            var allowedFrame = document.getElementById("allowedFrame");
+            var blockedFrame = document.getElementById("blockedFrame");
+            var reloadBtn = document.getElementById("reloadBtn");
+
+            function withCacheBust(url) {
+                var u = new URL(url, window.location.href);
+                u.searchParams.set("t", String(Date.now()));
+                return u.toString();
+            }
+
+            reloadBtn.addEventListener("click", function () {
+                allowedFrame.src = withCacheBust(allowedFrame.src);
+                blockedFrame.src = withCacheBust(blockedFrame.src);
+            });
+        })();
+    </script>
 </body>
 </html>
