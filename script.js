@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", function () {
     var button = document.getElementById("testBtn");
 
     var params = new URLSearchParams(window.location.search);
-    var host = params.get("host") || "192.168.1.10";
+    var host = params.get("host") || "127.0.0.1";
     var port = params.get("port") || "5500";
     var path = params.get("path") || "/attentiondata.json";
 
